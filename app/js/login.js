@@ -1,0 +1,110 @@
+require.config({
+    paths:{
+        "jquery":"lib/jquery.min"
+    },
+    shim:{
+        'jquery':{
+            exports:'Jquery'
+        }
+    }
+});
+require(["jquery"],function($){
+    //图片预加载，防止图片闪动
+    var imgar = [];
+    function eightimg(){
+        for(i=1;i<5;i++){
+            //创建一个img标签，将其赋值给imgar[i]
+            imgar[i] = new Image();
+            imgar[i].src = "../images/background_green"+i+".jpg";
+        }
+    }
+    eightimg();
+    var buttonImg = [];
+    function buttonimg(){
+        for(i=1;i<5;i++){
+            //创建一个img标签，将其赋值给imgar[i]
+            buttonImg[i] = new Image();
+            buttonImg[i].src = "../images/button_green"+i+".jpg";
+        }
+    }
+    buttonimg();
+    var open = false;
+    var divid = document.getElementsByClassName('center_two')[0];
+    var buttonimg = document.getElementsByClassName('login')[0];
+    $(".hover span").on("click",function(){
+        clearTimeout(imgb);
+        //获取按钮获取下标
+        open = true;
+        var index = $(this).index()+1;
+
+        function eight(){
+            function bimg(){
+                divid.style.backgroundImage = 'url("'+imgar[index].src+'")';
+                buttonimg.style.backgroundImage = 'url("'+buttonImg[index].src+'")';
+                console.log(divid.style.backgroundImage)
+            }
+            bimg();
+        }
+        eight();
+        //按钮变色
+        //var arr = ["#77d7a9","#7bceff","#ff7e7f","#fdd269"]
+        //var arrIndex = arr[index-1];
+
+        //$(".login").css({"background":""+arrIndex+""})
+        //运用localStorage保存图片和按钮的颜色变化
+        if(open == true){
+
+            localStorage.setItem("backgroundImage",imgar[index].src);
+            localStorage.setItem("buttonImage",buttonImg[index].src);
+            //localStorage.setItem("buttonBack",arrIndex);
+        }
+    });
+    //背景图的定时变化
+   //var timer = setInterval(function(){
+   //     i = 1;
+   //     function bimg(){
+   //         if(i<=4){
+   //             divid.style.backgroundImage = 'url("'+imgar[i].src+'")';
+   //             buttonimg.style.backgroundImage = 'url("'+buttonImg[i].src+'")';
+   //             i++
+   //         }else{
+   //             i = 1;
+   //         }
+   //     }
+   //     bimg();
+   // },2000)
+
+    if(open == false){
+        function eight(){
+            i = 1;
+            function bimg(){
+                if(i<=4){
+                    divid.style.backgroundImage = 'url("'+imgar[i].src+'")';
+                    buttonimg.style.backgroundImage = 'url("'+buttonImg[i].src+'")';
+                    i++
+                }else{
+                    i = 1;
+                }
+            }
+            imgb = setInterval(bimg,5000);
+        }
+        eight();
+    }
+
+    //获取图片和按钮的颜色
+    var backImg = localStorage.getItem("backgroundImage");
+    var bImg = localStorage.getItem("buttonImage");
+    //刷新页面时做到是上次点击变换图片和按钮时的颜色
+    divid.style.backgroundImage = 'url("'+backImg+'")';
+    buttonimg.style.backgroundImage = 'url("'+bImg+'")';
+
+
+    //input获取焦点时
+    $(".form_login").on("focus",function(){
+        $(".form_login").val("");
+    });
+    //input失去焦点时；
+    $(".form_login").on("blur",function(){
+        $(".form_login").val("输入列号登录");
+    });
+});
